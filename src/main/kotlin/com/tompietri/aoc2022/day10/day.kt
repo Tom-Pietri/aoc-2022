@@ -1,7 +1,5 @@
 package com.tompietri.aoc2022.day10
 
-import org.w3c.dom.ranges.Range
-
 fun day10FirstSolution(input: List<String>): Int {
     var accumulator = 1
     var total = 0
