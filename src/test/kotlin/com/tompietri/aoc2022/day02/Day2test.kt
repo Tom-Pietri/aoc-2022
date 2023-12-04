@@ -8,12 +8,12 @@ class Day2test {
     @Test
     fun `First solution - My input should return 68775`() {
         val input = readInputWithMultipleLines(2022, 2)
-        assertThat(day2FirstSolution(input)).isEqualTo(17189)
+        assertThat(day2FirstSolution(input)).isEqualTo(2149)
     }
 
     @Test
     fun `Second solution - My input should return 1215`() {
         val input = readInputWithMultipleLines(2022, 2)
-        assertThat(day2SecondSolution(input)).isEqualTo(13490)
+        assertThat(day2SecondSolution(input)).isEqualTo(71274)
     }
 }

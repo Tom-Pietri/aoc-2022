@@ -1,41 +1,46 @@
 package com.tompietri.aoc2022.day02
 
-fun day2FirstSolution(input: List<String>): Int = input.map { it.split(" ") }
-    .map { Round(it[0].first(), it[1].first()) }
-    .sumOf { it.computeScore() }
-fun day2SecondSolution(input: List<String>): Int = input.map { it.split(" ") }
-    .map { Round(it[0].first(), it[1].first()) }
-    .map { it.computeRoundToPlay() }
-    .sumOf { it.computeScore() }
+import kotlin.math.max
 
-private data class Round(val opponent: Char, val me: Char) {
-    fun computeScore(): Int {
-        val shapeScore = when(me) {
-            'X' -> 1
-            'Y' -> 2
-            'Z' -> 3
-            else -> throw IllegalArgumentException()
+fun day2FirstSolution(input: List<String>): Int {
+    val games = mapGames(input)
+
+    return games.filter { game ->
+        game.draws.all { draw ->
+            draw.nbRed <= 12 && draw.nbGreen <= 13 && draw.nbBlue <= 14
         }
-
-        val roundScore = when(me) {
-            'X' -> if(opponent == 'A') 3 else if(opponent == 'B') 0 else 6
-            'Y' -> if(opponent == 'A') 6 else if(opponent == 'B') 3 else 0
-            'Z' -> if(opponent == 'A') 0 else if(opponent == 'B') 6 else 3
-            else -> throw IllegalArgumentException()
-        }
-
-        return roundScore + shapeScore
-    }
-
-    // X means you need to lose, Y means you need to end the round in a draw, and Z means you need to win.
-    fun computeRoundToPlay(): Round {
-        val myAction = when (me) {
-            'X' -> if(opponent == 'A') 'Z' else if(opponent == 'B') 'X' else 'Y'
-            'Y' -> if(opponent == 'A') 'X' else if(opponent == 'B') 'Y' else 'Z'
-            'Z' -> if(opponent == 'A') 'Y' else if(opponent == 'B') 'Z' else 'X'
-            else -> throw IllegalArgumentException()
-        }
-
-        return Round(opponent, myAction)
-    }
+    }.sumOf { it.index }
 }
+
+fun day2SecondSolution(input: List<String>): Int {
+    return mapGames(input)
+        .map { game ->
+            game.draws.reduce { acc, draw ->
+                Draw(max(acc.nbRed, draw.nbRed), max(acc.nbGreen, draw.nbGreen), max(acc.nbBlue, draw.nbBlue))
+            }
+        }.sumOf { draw -> draw.nbRed * draw.nbGreen * draw.nbBlue }
+}
+
+private fun mapGames(input: List<String>): List<Game> {
+    val regex = Regex("(\\d+) (blue|red|green)")
+    val games = input.mapIndexed { index, line ->
+        val drawStrings = line.substringAfter(':')
+            .split(";")
+        Game(index + 1, drawStrings.map { draw ->
+            val nbEach = draw
+                .split(',')
+                .map { regex.find(it)!! }
+                .map { it.groupValues[1].toInt() to it.groupValues[2] }
+            Draw(
+                nbEach.find { it.second == "red" }?.first ?: 0,
+                nbEach.find { it.second == "green" }?.first ?: 0,
+                nbEach.find { it.second == "blue" }?.first ?: 0
+            )
+        }
+        )
+    }
+    return games
+}
+
+public data class Game(val index: Int, val draws: List<Draw>);
+data class Draw(val nbRed: Int, val nbGreen: Int, val nbBlue: Int);
