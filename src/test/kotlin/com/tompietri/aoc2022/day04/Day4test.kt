@@ -8,7 +8,7 @@ class Day4test {
     @Test
     fun `First solution - My input should return 68775`() {
         val input = readInputWithMultipleLines(2022, 4)
-        assertThat(day4FirstSolution(input)).isEqualTo(431)
+        assertThat(day4FirstSolution(input)).isEqualTo(26218)
     }
 
     @Test
