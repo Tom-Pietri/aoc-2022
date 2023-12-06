@@ -18,10 +18,10 @@ private fun mapTickets(input: List<String>): List<Ticket> {
     return tickets
 }
 
+
 fun day4SecondSolution(input: List<String>): Int {
     val ticketsCopy = mapTickets(input)
     val tickets = ticketsCopy.toMutableList()
-
     var count = 0;
     while (tickets.isNotEmpty()) {
         count++
